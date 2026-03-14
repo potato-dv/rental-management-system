@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Rental Property Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web-based system for landlords to manage rental properties and for tenants to apply and track their rentals.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+**1. Clone the repo**
+```bash
+git clone https://github.com/YOURUSERNAME/rental-management-system.git
+cd rental-management-system
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**2. Install Backend packages**
+```bash
+cd server
+npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**3. Install Frontend packages**
+```bash
+cd ../client
+npm install
+```
 
-### `npm test`
+**4. Create .env file inside server/ folder**
+```
+PORT=5000
+MONGO_URI=your_mongodb_uri_here
+JWT_SECRET=your_secret_key_here
+JWT_EXPIRE=1d
+```
+> Ask the backend team for the MONGO_URI and JWT_SECRET values.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Running the Project
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Open 2 terminals at the same time:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Terminal 1 — Backend**
+```bash
+cd server
+npm run dev
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Terminal 2 — Frontend**
+```bash
+cd client
+npm start
+```
 
-### `npm run eject`
+Then open your browser at:
+```
+http://localhost:3000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Branch Guide
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Branch | For |
+|--------|-----|
+| `main` | Final working code only — no direct push |
+| `backend` | All backend code inside server/ folder |
+| `frontend` | All frontend code inside client/ folder |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Guides:**
+- Always pull from `main` before starting work
+- Push only to your assigned branch
+- Never push directly to `main`
+- Create a Pull Request when your feature is done
 
-## Learn More
+**Daily workflow:**
+```bash
+# Before starting
+git pull origin main
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# After finishing
+git add .
+git commit -m "ano meron"
+git push origin your-branch-name (ex. git push origin frontend)
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
