@@ -53,7 +53,9 @@ npm start
 
 Then open your browser at:
 ```
-http://localhost:3000
+http://localhost:3000  
+
+It can change depending on the computer, configuration, or if the port is already in use.
 ```
 
 ---
