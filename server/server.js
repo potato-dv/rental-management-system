@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 // Routes (we add these later)
 app.use('/api/auth', require('./routes/authRoutes'))
-// app.use('/api/units', require('./routes/unitRoutes'))
+app.use('/api/units', require('./routes/unitRoutes'))
 // app.use('/api/tenants', require('./routes/tenantRoutes'))
 // app.use('/api/applications', require('./routes/applicationRoutes'))
 // app.use('/api/leases', require('./routes/leaseRoutes'))

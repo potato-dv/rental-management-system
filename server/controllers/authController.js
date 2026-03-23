@@ -24,14 +24,14 @@ const register = async (req, res) => {
       });
     }
 
-    // Create user
+    // Force role to be tenant (admin can only be created via init script)
     const user = await User.create({
       name,
       email,
       password,
       contactNumber,
       address,
-      role: "tenant",
+      role: "tenant", // Always tenant for public registration
     });
 
     res.status(201).json({
