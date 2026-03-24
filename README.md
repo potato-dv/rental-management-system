@@ -65,23 +65,33 @@ It can change depending on the computer, configuration, or if the port is alread
 | Branch | For |
 |--------|-----|
 | `main` | Final working code only — no direct push |
-| `backend` | All backend code inside server/ folder |
-| `frontend` | All frontend code inside client/ folder |
+| `own-branch` ex. `yssa-frontend` | Each team member should create their own branch for feature work.|
 
 **Guides:**
 - Always pull from `main` before starting work
-- Push only to your assigned branch
+- Push only to your own branch
 - Never push directly to `main`
 - Create a Pull Request when your feature is done
 
 **Daily workflow:**
 ```bash
-# Before starting
+# Step 1: Pull latest main before starting work
+git switch main
 git pull origin main
 
-# After finishing
+# Step 2: Switch to your own branch (create if it doesn't exist)
+git checkout -b your-own-branch   # create if doesn't
+
+# Step 3: Merge the main in your own branch
+git merge main     
+
+# Step 4: Work on your code
+                      
+# Step 5: After finishing work, stage and commit changes
 git add .
 git commit -m "ano meron"
-git push origin your-branch-name (ex. git push origin frontend)
-```
+
+# Step 6: Push your changes to your own branch
+git push origin your-own-branch   
+
 
