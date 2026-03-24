@@ -1,19 +1,21 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const {
   getUnits,
   getUnit,
-  createUnit,
   updateUnit,
-  deleteUnit
-} = require('../controllers/unitController')
-const { protect } = require('../middleware/authMiddleware')
-const { authorize } = require('../middleware/roleMiddleware')
+} = require("../controllers/unitController");
+const { protect } = require("../middleware/authMiddleware");
+const { authorize } = require("../middleware/roleMiddleware");
 
-router.get('/', getUnits)
-router.get('/:id', getUnit)
-router.post('/', protect, authorize('admin'), createUnit)
-router.put('/:id', protect, authorize('admin'), updateUnit)
-router.delete('/:id', protect, authorize('admin'), deleteUnit)
+// Public routes - Anyone can view units
+router.get("/", getUnits);
+router.get("/:id", getUnit);
 
-module.exports = router
+// Admin routes - Only admins can update unit details (price, status, description, images)
+router.put("/:id", protect, authorize("admin"), updateUnit);
+
+// Note: CREATE and DELETE routes are removed because units are fixed
+// Units should be initialized using: node server/scripts/initUnits.js
+
+module.exports = router;

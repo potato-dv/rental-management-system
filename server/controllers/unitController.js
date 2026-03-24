@@ -1,118 +1,74 @@
-const Unit = require('../models/Unit')
+const Unit = require("../models/Unit");
 
 // @desc    Get all units
 // @route   GET /api/units
 // @access  Public
 const getUnits = async (req, res) => {
   try {
-    const units = await Unit.find()
+    const units = await Unit.find();
     res.status(200).json({
       success: true,
       count: units.length,
-      units
-    })
+      units,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // @desc    Get single unit
 // @route   GET /api/units/:id
 // @access  Public
 const getUnit = async (req, res) => {
   try {
-    const unit = await Unit.findById(req.params.id)
+    const unit = await Unit.findById(req.params.id);
     if (!unit) {
       return res.status(404).json({
         success: false,
-        message: 'Unit not found'
-      })
+        message: "Unit not found",
+      });
     }
     res.status(200).json({
       success: true,
-      unit
-    })
+      unit,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
-
-// @desc    Create unit
-// @route   POST /api/units
-// @access  Private/Admin
-const createUnit = async (req, res) => {
-  try {
-    const unit = await Unit.create(req.body)
-    res.status(201).json({
-      success: true,
-      message: 'Unit created successfully',
-      unit
-    })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    })
-  }
-}
+};
 
 // @desc    Update unit
 // @route   PUT /api/units/:id
 // @access  Private/Admin
 const updateUnit = async (req, res) => {
   try {
-    const unit = await Unit.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    )
+    const unit = await Unit.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!unit) {
       return res.status(404).json({
         success: false,
-        message: 'Unit not found'
-      })
+        message: "Unit not found",
+      });
     }
     res.status(200).json({
       success: true,
-      message: 'Unit updated successfully',
-      unit
-    })
+      message: "Unit updated successfully",
+      unit,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
-// @desc    Delete unit
-// @route   DELETE /api/units/:id
-// @access  Private/Admin
-const deleteUnit = async (req, res) => {
-  try {
-    const unit = await Unit.findByIdAndDelete(req.params.id)
-    if (!unit) {
-      return res.status(404).json({
-        success: false,
-        message: 'Unit not found'
-      })
-    }
-    res.status(200).json({
-      success: true,
-      message: 'Unit deleted successfully'
-    })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    })
-  }
-}
-
-module.exports = { getUnits, getUnit, createUnit, updateUnit, deleteUnit }
+module.exports = { getUnits, getUnit, updateUnit };
