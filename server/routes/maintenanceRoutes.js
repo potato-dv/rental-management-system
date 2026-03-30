@@ -14,7 +14,7 @@ const { authorize } = require("../middleware/roleMiddleware");
 const {
   validateMaintenanceRequest,
   validateObjectId,
-} = require("../middleware/validationMiddleware");
+} = require("../middleware/validation");
 
 // Tenant routes
 router.get(

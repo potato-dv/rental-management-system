@@ -15,7 +15,7 @@ const { authorize } = require("../middleware/roleMiddleware");
 const {
   validatePayment,
   validateObjectId,
-} = require("../middleware/validationMiddleware");
+} = require("../middleware/validation");
 
 // Tenant routes
 router.get("/my/payments", protect, authorize("tenant"), getMyPayments);

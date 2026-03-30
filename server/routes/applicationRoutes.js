@@ -13,7 +13,7 @@ const { authorize } = require("../middleware/roleMiddleware");
 const {
   validateApplication,
   validateObjectId,
-} = require("../middleware/validationMiddleware");
+} = require("../middleware/validation");
 
 // Tenant routes - get own applications, create application
 router.get("/my/applications", protect, authorize("tenant"), getMyApplications);

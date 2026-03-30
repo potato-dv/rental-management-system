@@ -10,10 +10,7 @@ const {
 } = require("../controllers/leaseController");
 const { protect } = require("../middleware/authMiddleware");
 const { authorize } = require("../middleware/roleMiddleware");
-const {
-  validateLease,
-  validateObjectId,
-} = require("../middleware/validationMiddleware");
+const { validateLease, validateObjectId } = require("../middleware/validation");
 
 // Tenant routes
 router.get("/my/lease", protect, authorize("tenant"), getMyLease);
