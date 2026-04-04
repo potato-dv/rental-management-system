@@ -1,6 +1,7 @@
 const MaintenanceRequest = require("../models/MaintenanceRequest");
 const Lease = require("../models/Lease");
 const Unit = require("../models/Unit");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all maintenance requests
 // @route   GET /api/maintenance
@@ -10,11 +11,26 @@ const getMaintenanceRequests = async (req, res) => {
     const { status, priority } = req.query;
     const filter = {};
 
+    const validStatuses = ["open", "in-progress", "resolved"];
+    const validPriorities = ["low", "medium", "high"];
+
     if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status. Must be open, in-progress, or resolved",
+        });
+      }
       filter.status = status;
     }
 
     if (priority) {
+      if (!validPriorities.includes(priority)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid priority. Must be low, medium, or high",
+        });
+      }
       filter.priority = priority;
     }
 
@@ -30,10 +46,7 @@ const getMaintenanceRequests = async (req, res) => {
       requests,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -70,10 +83,7 @@ const getMaintenanceRequest = async (req, res) => {
       request,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -93,10 +103,7 @@ const getMyMaintenanceRequests = async (req, res) => {
       requests,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -140,10 +147,7 @@ const createMaintenanceRequest = async (req, res) => {
       request: populatedRequest,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -192,10 +196,7 @@ const updateMaintenanceStatus = async (req, res) => {
       request: updatedRequest,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -243,10 +244,7 @@ const updateMaintenancePriority = async (req, res) => {
       request: updatedRequest,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -269,10 +267,7 @@ const deleteMaintenanceRequest = async (req, res) => {
       message: "Maintenance request deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

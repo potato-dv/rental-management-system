@@ -4,6 +4,7 @@ const Lease = require("../models/Lease");
 const Payment = require("../models/Payment");
 const MaintenanceRequest = require("../models/MaintenanceRequest");
 const RentalApplication = require("../models/RentalApplication");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get admin dashboard stats
 // @route   GET /api/dashboard/admin
@@ -141,10 +142,7 @@ const getAdminDashboard = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -229,10 +227,7 @@ const getTenantDashboard = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -245,10 +240,37 @@ const getFinancialSummary = async (req, res) => {
 
     const matchFilter = { status: "verified" };
 
+    if ((startDate && !endDate) || (!startDate && endDate)) {
+      return res.status(400).json({
+        success: false,
+        message: "Both startDate and endDate are required",
+      });
+    }
+
     if (startDate && endDate) {
+      const parsedStart = new Date(startDate);
+      const parsedEnd = new Date(endDate);
+
+      if (
+        Number.isNaN(parsedStart.getTime()) ||
+        Number.isNaN(parsedEnd.getTime())
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid startDate or endDate",
+        });
+      }
+
+      if (parsedEnd < parsedStart) {
+        return res.status(400).json({
+          success: false,
+          message: "endDate must be after startDate",
+        });
+      }
+
       matchFilter.paidDate = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $gte: parsedStart,
+        $lte: parsedEnd,
       };
     }
 
@@ -328,10 +350,7 @@ const getFinancialSummary = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

@@ -1,4 +1,5 @@
 const Unit = require("../models/Unit");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all units
 // @route   GET /api/units
@@ -12,10 +13,7 @@ const getUnits = async (req, res) => {
       units,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -36,10 +34,7 @@ const getUnit = async (req, res) => {
       unit,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -64,10 +59,7 @@ const updateUnit = async (req, res) => {
       unit,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

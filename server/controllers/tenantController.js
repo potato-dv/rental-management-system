@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Lease = require("../models/Lease");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all tenants
 // @route   GET /api/tenants
@@ -13,10 +14,7 @@ const getTenants = async (req, res) => {
       tenants,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -49,10 +47,7 @@ const getTenant = async (req, res) => {
       activeLease,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -82,10 +77,7 @@ const getMyProfile = async (req, res) => {
       activeLease,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -116,10 +108,7 @@ const updateTenant = async (req, res) => {
       tenant,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -154,10 +143,7 @@ const updateMyProfile = async (req, res) => {
       tenant,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -197,10 +183,7 @@ const deleteTenant = async (req, res) => {
       message: "Tenant deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

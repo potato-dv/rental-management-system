@@ -2,6 +2,7 @@ const Lease = require("../models/Lease");
 const Unit = require("../models/Unit");
 const User = require("../models/User");
 const Payment = require("../models/Payment");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all leases
 // @route   GET /api/leases
@@ -11,7 +12,15 @@ const getLeases = async (req, res) => {
     const { status } = req.query;
     const filter = {};
 
+    const validStatuses = ["active", "expired", "terminated"];
+
     if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status. Must be active, expired, or terminated",
+        });
+      }
       filter.status = status;
     }
 
@@ -26,10 +35,7 @@ const getLeases = async (req, res) => {
       leases,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -71,10 +77,7 @@ const getLease = async (req, res) => {
       payments,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -108,10 +111,7 @@ const getMyLease = async (req, res) => {
       payments,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -206,10 +206,7 @@ const createLease = async (req, res) => {
       lease: populatedLease,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -257,10 +254,7 @@ const updateLease = async (req, res) => {
       lease: updatedLease,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -315,10 +309,7 @@ const terminateLease = async (req, res) => {
       lease: updatedLease,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

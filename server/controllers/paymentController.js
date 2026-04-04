@@ -1,5 +1,7 @@
 const Payment = require("../models/Payment");
 const Lease = require("../models/Lease");
+const { isValidObjectId } = require("../middleware/validation");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all payments
 // @route   GET /api/payments
@@ -9,11 +11,25 @@ const getPayments = async (req, res) => {
     const { status, tenantId } = req.query;
     const filter = {};
 
+    const validStatuses = ["pending", "verified", "overdue"];
+
     if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status. Must be pending, verified, or overdue",
+        });
+      }
       filter.status = status;
     }
 
     if (tenantId) {
+      if (!isValidObjectId(tenantId)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid tenant ID format",
+        });
+      }
       filter.tenantId = tenantId;
     }
 
@@ -34,10 +50,7 @@ const getPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -79,10 +92,7 @@ const getPayment = async (req, res) => {
       payment,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -107,10 +117,7 @@ const getMyPayments = async (req, res) => {
       payments,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -156,10 +163,7 @@ const createPayment = async (req, res) => {
       payment: populatedPayment,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -217,10 +221,7 @@ const recordTenantPayment = async (req, res) => {
       payment: updatedPayment,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -271,10 +272,7 @@ const verifyPayment = async (req, res) => {
       payment: updatedPayment,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -309,10 +307,7 @@ const updatePayment = async (req, res) => {
       payment,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -335,10 +330,7 @@ const deletePayment = async (req, res) => {
       message: "Payment deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

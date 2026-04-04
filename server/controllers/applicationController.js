@@ -1,6 +1,7 @@
 const RentalApplication = require("../models/RentalApplication");
 const Unit = require("../models/Unit");
 const Lease = require("../models/Lease");
+const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all applications
 // @route   GET /api/applications
@@ -10,7 +11,15 @@ const getApplications = async (req, res) => {
     const { status } = req.query;
     const filter = {};
 
+    const validStatuses = ["pending", "approved", "denied"];
+
     if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status. Must be pending, approved, or denied",
+        });
+      }
       filter.status = status;
     }
 
@@ -25,10 +34,7 @@ const getApplications = async (req, res) => {
       applications,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -64,10 +70,7 @@ const getApplication = async (req, res) => {
       application,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -88,10 +91,7 @@ const getMyApplications = async (req, res) => {
       applications,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -164,10 +164,7 @@ const createApplication = async (req, res) => {
       application: populatedApplication,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -231,10 +228,7 @@ const updateApplicationStatus = async (req, res) => {
       application: updatedApplication,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 
@@ -276,10 +270,7 @@ const deleteApplication = async (req, res) => {
       message: "Application deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return sendServerError(res, error);
   }
 };
 

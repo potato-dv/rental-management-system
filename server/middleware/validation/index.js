@@ -7,7 +7,7 @@ const { validateApplication } = require("./applicationValidation");
 const { validateLease } = require("./leaseValidation");
 const { validatePayment } = require("./paymentValidation");
 const { validateMaintenanceRequest } = require("./maintenanceValidation");
-const { validateObjectId } = require("./helpers");
+const { validateObjectId, isValidObjectId } = require("./helpers");
 
 module.exports = {
   validateRegister,
@@ -19,4 +19,5 @@ module.exports = {
   validatePayment,
   validateMaintenanceRequest,
   validateObjectId,
+  isValidObjectId,
 };
