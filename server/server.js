@@ -78,7 +78,7 @@ app.disable("x-powered-by");
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: requestBodyLimit }));
-app.use(mongoSanitize());
+//app.use(mongoSanitize());
 app.use("/uploads", express.static("uploads"));
 
 // Test route
