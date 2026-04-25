@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./docs/swagger");
 const connectDB = require("./config/db");
 
 // Load env variables
@@ -73,18 +75,36 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const mongoSanitizeRequest = (req, res, next) => {
+  // express@5 exposes req.query as a getter-only property.
+  // Sanitize payloads in-place to avoid reassigning req.query.
+  ["body", "params", "headers", "query"].forEach((key) => {
+    if (req[key] && typeof req[key] === "object") {
+      mongoSanitize.sanitize(req[key]);
+    }
+  });
+  next();
+};
+
 // Middleware
 app.disable("x-powered-by");
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: requestBodyLimit }));
-app.use(mongoSanitize());
+app.use(mongoSanitizeRequest);
 app.use("/uploads", express.static("uploads"));
 
 // Test route
 app.get("/", (req, res) => {
   res.json({ message: "Rental Management API is running" });
 });
+
+// API Documentation
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, { explorer: true }),
+);
 
 // Routes
 app.use("/api/auth", authLimiter);
