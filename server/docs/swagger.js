@@ -58,9 +58,37 @@ const swaggerSpec = {
       UnitUpdateRequest: {
         type: "object",
         properties: {
+          unitNumber: { type: "string", example: "601" },
+          type: {
+            type: "string",
+            enum: ["studio", "one-bedroom", "two-bedroom", "three-bedroom"],
+            example: "studio",
+          },
           price: { type: "number", example: 12000 },
+          floor: { type: "string", example: "6" },
           status: { type: "string", example: "occupied" },
           description: { type: "string", example: "2-bedroom apartment" },
+        },
+      },
+      UnitCreateRequest: {
+        type: "object",
+        required: ["unitNumber", "type", "price"],
+        properties: {
+          unitNumber: { type: "string", example: "601" },
+          type: {
+            type: "string",
+            enum: ["studio", "one-bedroom", "two-bedroom", "three-bedroom"],
+            example: "studio",
+          },
+          price: { type: "number", example: 14000 },
+          floor: { type: "string", example: "6" },
+          status: { type: "string", enum: ["available", "occupied"] },
+          description: { type: "string", example: "Studio unit on floor 6" },
+          images: {
+            type: "array",
+            items: { type: "string" },
+            example: ["https://example.com/unit-601.jpg"],
+          },
         },
       },
       TenantUpdateRequest: {
@@ -187,6 +215,25 @@ const swaggerSpec = {
           200: { description: "Units fetched" },
         },
       },
+      post: {
+        tags: ["Units"],
+        summary: "Create unit (admin only)",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/UnitCreateRequest" },
+            },
+          },
+        },
+        responses: {
+          201: { description: "Unit created" },
+          400: { description: "Invalid input" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
     },
     "/api/units/{id}": {
       get: {
@@ -229,6 +276,26 @@ const swaggerSpec = {
           200: { description: "Unit updated" },
           401: { description: "Unauthorized" },
           403: { description: "Forbidden" },
+        },
+      },
+      delete: {
+        tags: ["Units"],
+        summary: "Delete unit (admin only)",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: { description: "Unit deleted" },
+          400: { description: "Unit has active lease" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+          404: { description: "Unit not found" },
         },
       },
     },

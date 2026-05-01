@@ -4,16 +4,23 @@ const {
   getUnits,
   getUnit,
   updateUnit,
+  createUnit,
+  deleteUnit,
 } = require("../controllers/unitController");
 const { protect } = require("../middleware/authMiddleware");
 const { authorize } = require("../middleware/roleMiddleware");
-const { validateUnit, validateObjectId } = require("../middleware/validation");
+const {
+  validateUnit,
+  validateCreateUnit,
+  validateObjectId,
+} = require("../middleware/validation");
 
 // Public routes - Anyone can view units
 router.get("/", getUnits);
 router.get("/:id", validateObjectId, getUnit);
 
-// Admin routes - Only admins can update unit details (price, status, description, images)
+// Admin routes
+router.post("/", protect, authorize("admin"), validateCreateUnit, createUnit);
 router.put(
   "/:id",
   protect,
@@ -22,8 +29,12 @@ router.put(
   validateUnit,
   updateUnit,
 );
-
-// Note: CREATE and DELETE routes are removed because units are fixed
-// Units should be initialized using: node server/scripts/initUnits.js
+router.delete(
+  "/:id",
+  protect,
+  authorize("admin"),
+  validateObjectId,
+  deleteUnit,
+);
 
 module.exports = router;
