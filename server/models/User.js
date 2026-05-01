@@ -34,20 +34,35 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-// Hash password before saving
-UserSchema.pre("save", async function (next) {
+/**
+ * PASSWORD HASHING HOOK (Modern Async Style)
+ * Inalis na natin ang 'next' parameter dito. 
+ * Dahil async ito, automatic na maghihintay ang Mongoose bago i-save.
+ */
+UserSchema.pre("save", async function () {
+  // 1. Check kung binago ang password. Kung hindi, exit na agad.
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+
+  try {
+    // 2. Hashing process
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    
+    // NOTE: Wala nang next() dito para iwas "next is not a function" error.
+  } catch (error) {
+    // 3. I-throw ang error para masalo ng catch block sa controller mo
+    throw new Error(error);
+  }
 });
 
-// Compare password method
+/**
+ * PASSWORD MATCHING METHOD
+ */
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
