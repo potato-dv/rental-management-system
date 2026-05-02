@@ -5,12 +5,15 @@ const Payment = require("../models/Payment");
 const MaintenanceRequest = require("../models/MaintenanceRequest");
 const RentalApplication = require("../models/RentalApplication");
 const { sendServerError } = require("../utils/errorResponse");
+const { syncOverduePayments } = require("../utils/syncOverduePayments");
 
 // @desc    Get admin dashboard stats
 // @route   GET /api/dashboard/admin
 // @access  Private/Admin
 const getAdminDashboard = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     // Unit statistics
     const totalUnits = await Unit.countDocuments();
     const occupiedUnits = await Unit.countDocuments({ status: "occupied" });
@@ -151,6 +154,8 @@ const getAdminDashboard = async (req, res) => {
 // @access  Private/Tenant
 const getTenantDashboard = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     // Get tenant's active lease
     const activeLease = await Lease.findOne({
       tenantId: req.user.id,
@@ -236,6 +241,8 @@ const getTenantDashboard = async (req, res) => {
 // @access  Private/Admin
 const getFinancialSummary = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     const { startDate, endDate } = req.query;
 
     const matchFilter = { status: "verified" };

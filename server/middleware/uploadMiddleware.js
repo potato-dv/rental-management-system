@@ -12,18 +12,25 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter - only allow images
+// File filter - only allow images and PDFs
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|webp/;
+  const allowedTypes = /jpeg|jpg|png|webp|pdf/;
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase(),
   );
-  const mimetype = allowedTypes.test(file.mimetype);
+  const mimetypeImages = /jpeg|jpg|png|webp/;
+  const mimetypePdf = /application\/pdf/;
+  const mimetype =
+    mimetypeImages.test(file.mimetype) || mimetypePdf.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error("Only image files (jpeg, jpg, png, webp) are allowed"));
+    cb(
+      new Error(
+        "Only image files (jpeg, jpg, png, webp) and PDF files are allowed",
+      ),
+    );
   }
 };
 
@@ -38,6 +45,9 @@ const upload = multer({
 
 // Middleware for single image upload
 const uploadSingle = upload.single("image");
+
+// Middleware for proof of payment upload
+const uploadProofOfPayment = upload.single("proofOfPayment");
 
 // Middleware for multiple images upload (max 10)
 const uploadMultiple = upload.array("images", 10);
@@ -82,5 +92,6 @@ const handleUploadError = (uploadMiddleware) => {
 
 module.exports = {
   uploadSingle: handleUploadError(uploadSingle),
+  uploadProofOfPayment: handleUploadError(uploadProofOfPayment),
   uploadMultiple: handleUploadError(uploadMultiple),
 };

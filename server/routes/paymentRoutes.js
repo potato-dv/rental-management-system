@@ -16,6 +16,7 @@ const {
   validatePayment,
   validateObjectId,
 } = require("../middleware/validation");
+const { uploadProofOfPayment } = require("../middleware/uploadMiddleware");
 
 // Tenant routes
 router.get("/my/payments", protect, authorize("tenant"), getMyPayments);
@@ -24,6 +25,7 @@ router.post(
   protect,
   authorize("tenant"),
   validateObjectId,
+  uploadProofOfPayment,
   recordTenantPayment,
 );
 
