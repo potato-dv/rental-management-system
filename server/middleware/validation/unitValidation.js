@@ -1,7 +1,8 @@
 const { sanitizeString } = require("./helpers");
 
 const validateUnit = (req, res, next) => {
-  const { unitNumber, type, price, status, description, floor } = req.body;
+  // IDINAGDAG ANG 'property' DITO
+  const { unitNumber, type, price, status, description, floor, property } = req.body;
 
   // Type validation (if provided)
   if (type) {
@@ -87,7 +88,7 @@ const validateUnit = (req, res, next) => {
     }
   }
 
-  // Sanitize description
+  // Sanitize inputs
   if (description) {
     req.body.description = sanitizeString(description);
   }
@@ -96,6 +97,10 @@ const validateUnit = (req, res, next) => {
   }
   if (floor) {
     req.body.floor = sanitizeString(floor);
+  }
+  // IDINAGDAG ANG SANITIZE PARA SA PROPERTY
+  if (property) {
+    req.body.property = sanitizeString(property);
   }
 
   next();

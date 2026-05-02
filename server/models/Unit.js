@@ -7,6 +7,12 @@ const UnitSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  // ---> IDINAGDAG NATIN ITO PARA MA-SAVE ANG PROPERTY NAME <---
+  property: {
+    type: String,
+    trim: true,
+    default: 'Rentix Property'
+  },
   type: {
     type: String,
     enum: ['studio', 'one-bedroom', 'two-bedroom', 'three-bedroom'],

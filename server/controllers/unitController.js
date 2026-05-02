@@ -116,7 +116,8 @@ const updateUnit = async (req, res) => {
 // @access  Private/Admin
 const createUnit = async (req, res) => {
   try {
-    const { unitNumber, type, price, floor, description, status, images } =
+    // IDINAGDAG ANG 'property' DITO
+    const { unitNumber, type, price, floor, description, status, images, property } =
       req.body;
 
     const existingUnit = await findUnitWithSameNumber(unitNumber);
@@ -129,6 +130,7 @@ const createUnit = async (req, res) => {
 
     const unit = await Unit.create({
       unitNumber,
+      property: property || "Rentix Property", // IDINAGDAG ITO PARA MA-SAVE
       type,
       price,
       floor,
