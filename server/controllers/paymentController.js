@@ -2,12 +2,15 @@ const Payment = require("../models/Payment");
 const Lease = require("../models/Lease");
 const { isValidObjectId } = require("../middleware/validation");
 const { sendServerError } = require("../utils/errorResponse");
+const { syncOverduePayments } = require("../utils/syncOverduePayments");
 
 // @desc    Get all payments
 // @route   GET /api/payments
 // @access  Private/Admin
 const getPayments = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     const { status, tenantId } = req.query;
     const filter = {};
 
@@ -59,6 +62,8 @@ const getPayments = async (req, res) => {
 // @access  Private
 const getPayment = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     const payment = await Payment.findById(req.params.id)
       .populate("tenantId", "name email contactNumber")
       .populate({
@@ -101,6 +106,8 @@ const getPayment = async (req, res) => {
 // @access  Private/Tenant
 const getMyPayments = async (req, res) => {
   try {
+    await syncOverduePayments();
+
     const payments = await Payment.find({ tenantId: req.user.id })
       .populate({
         path: "leaseId",
@@ -172,7 +179,7 @@ const createPayment = async (req, res) => {
 // @access  Private/Tenant
 const recordTenantPayment = async (req, res) => {
   try {
-    const { paymentMethod, proofOfPayment } = req.body;
+    const { paymentMethod } = req.body;
 
     const payment = await Payment.findById(req.params.id);
 
@@ -198,9 +205,17 @@ const recordTenantPayment = async (req, res) => {
       });
     }
 
+    // Validate file upload
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Proof of payment file is required",
+      });
+    }
+
     payment.paidDate = Date.now();
     payment.paymentMethod = paymentMethod;
-    payment.proofOfPayment = proofOfPayment;
+    payment.proofOfPayment = req.file.path;
     payment.recordedBy = "tenant";
     payment.status = "pending";
     await payment.save();
