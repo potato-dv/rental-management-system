@@ -20,6 +20,7 @@ const swaggerSpec = {
     { name: "Leases" },
     { name: "Payments" },
     { name: "Maintenance" },
+    { name: "Help Reports" },
     { name: "Dashboard" },
   ],
   components: {
@@ -131,6 +132,37 @@ const swaggerSpec = {
         type: "object",
         properties: {
           priority: { type: "string", example: "high" },
+        },
+      },
+      HelpReportCreateRequest: {
+        type: "object",
+        required: ["category", "subject", "description"],
+        properties: {
+          category: {
+            type: "string",
+            enum: ["help", "report"],
+            example: "help",
+          },
+          subject: { type: "string", example: "Need assistance with payment" },
+          description: {
+            type: "string",
+            example: "I need clarification on my latest due amount.",
+          },
+        },
+      },
+      HelpReportStatusUpdateRequest: {
+        type: "object",
+        required: ["status"],
+        properties: {
+          status: {
+            type: "string",
+            enum: ["open", "in-progress", "resolved"],
+            example: "resolved",
+          },
+          adminResponse: {
+            type: "string",
+            example: "Your issue has been reviewed and resolved.",
+          },
         },
       },
       ErrorResponse: {
@@ -922,6 +954,117 @@ const swaggerSpec = {
         },
         responses: {
           200: { description: "Maintenance priority updated" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
+    },
+    "/api/help-reports/my/requests": {
+      get: {
+        tags: ["Help Reports"],
+        summary: "Get my help/report requests (tenant only)",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: { description: "Requests fetched" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
+    },
+    "/api/help-reports": {
+      get: {
+        tags: ["Help Reports"],
+        summary: "Get all help/report requests (admin only)",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: { description: "Requests fetched" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
+      post: {
+        tags: ["Help Reports"],
+        summary: "Create help/report request (tenant only)",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/HelpReportCreateRequest" },
+            },
+          },
+        },
+        responses: {
+          201: { description: "Request created" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
+    },
+    "/api/help-reports/{id}": {
+      get: {
+        tags: ["Help Reports"],
+        summary: "Get help/report request by ID (admin/tenant)",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: { description: "Request fetched" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+          404: { description: "Not found" },
+        },
+      },
+      delete: {
+        tags: ["Help Reports"],
+        summary: "Delete help/report request by ID (admin only)",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: { description: "Request deleted" },
+          401: { description: "Unauthorized" },
+          403: { description: "Forbidden" },
+        },
+      },
+    },
+    "/api/help-reports/{id}/status": {
+      put: {
+        tags: ["Help Reports"],
+        summary: "Update help/report status (admin only)",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/HelpReportStatusUpdateRequest",
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Request status updated" },
           401: { description: "Unauthorized" },
           403: { description: "Forbidden" },
         },

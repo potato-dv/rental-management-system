@@ -116,6 +116,7 @@ app.use("/api/applications", require("./routes/applicationRoutes"));
 app.use("/api/leases", require("./routes/leaseRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/maintenance", require("./routes/maintenanceRoutes"));
+app.use("/api/help-reports", require("./routes/helpReportRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 
 // Global error handler

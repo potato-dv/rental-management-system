@@ -7,6 +7,10 @@ const { validateApplication } = require("./applicationValidation");
 const { validateLease } = require("./leaseValidation");
 const { validatePayment } = require("./paymentValidation");
 const { validateMaintenanceRequest } = require("./maintenanceValidation");
+const {
+  validateHelpReport,
+  validateHelpReportStatusUpdate,
+} = require("./helpReportValidation");
 const { validateObjectId, isValidObjectId } = require("./helpers");
 
 module.exports = {
@@ -19,6 +23,8 @@ module.exports = {
   validateLease,
   validatePayment,
   validateMaintenanceRequest,
+  validateHelpReport,
+  validateHelpReportStatusUpdate,
   validateObjectId,
   isValidObjectId,
 };
