@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Lease = require("../models/Lease");
+const Unit = require("../models/Unit");
+const Payment = require("../models/Payment");
 const { sendServerError } = require("../utils/errorResponse");
 
 // @desc    Get all tenants
@@ -147,29 +149,37 @@ const updateMyProfile = async (req, res) => {
   }
 };
 
-// @desc    Delete tenant
+// @desc    Remove tenant (Evict & Downgrade to regular user)
 // @route   DELETE /api/tenants/:id
 // @access  Private/Admin
 const deleteTenant = async (req, res) => {
   try {
-    // Check if tenant has active lease
+    // 1. Hanapin muna kung may hawak siyang unit (Active Lease)
     const activeLease = await Lease.findOne({
       tenantId: req.params.id,
       status: "active",
     });
 
+    // 2. Cascade Clean-up (Tatanggalin lang ang kontrata at utang)
     if (activeLease) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Cannot delete tenant with active lease. Terminate lease first.",
-      });
+      // Ibalik sa 'available' yung Unit
+      if (activeLease.unitId) {
+        await Unit.findByIdAndUpdate(activeLease.unitId, { status: "available" });
+      }
+
+      // Burahin ang pending payments ng lease na ito
+      await Payment.deleteMany({ leaseId: activeLease._id, status: "pending" });
+
+      // Burahin ang kontrata (Lease)
+      await Lease.findByIdAndDelete(activeLease._id);
     }
 
-    const tenant = await User.findOneAndDelete({
-      _id: req.params.id,
-      role: "tenant",
-    });
+    // 3. IMBES NA I-DELETE, I-DOWNGRADE LANG ANG ROLE NIYA
+    const tenant = await User.findByIdAndUpdate(
+      req.params.id,
+      { role: "user" }, // Babalik siya sa pagiging normal na user/applicant
+      { new: true }
+    );
 
     if (!tenant) {
       return res.status(404).json({
@@ -180,7 +190,7 @@ const deleteTenant = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Tenant deleted successfully",
+      message: "Tenant successfully removed from unit but account remains active.",
     });
   } catch (error) {
     return sendServerError(res, error);

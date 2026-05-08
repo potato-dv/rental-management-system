@@ -15,12 +15,19 @@ const {
   validateObjectId,
 } = require("../middleware/validation");
 
-// Tenant routes - get own applications, create application
-router.get("/my/applications", protect, authorize("tenant"), getMyApplications);
+// User/Tenant routes - get own applications, create application
+// BAGO: Dinagdag ang "user" para makapag-apply ang mga bagong gawang account!
+router.get(
+  "/my/applications",
+  protect,
+  authorize("tenant", "user"), 
+  getMyApplications
+);
+
 router.post(
   "/",
   protect,
-  authorize("tenant"),
+  authorize("tenant", "user"), // BAGO: Allowed na ang normal na "user" mag-apply
   validateApplication,
   createApplication,
 );
@@ -39,14 +46,15 @@ router.put(
 router.get(
   "/:id",
   protect,
-  authorize("admin", "tenant"),
+  authorize("admin", "tenant", "user"), // BAGO: Dinagdag ang "user"
   validateObjectId,
   getApplication,
 );
+
 router.delete(
   "/:id",
   protect,
-  authorize("admin", "tenant"),
+  authorize("admin", "tenant", "user"), // BAGO: Dinagdag ang "user"
   validateObjectId,
   deleteApplication,
 );

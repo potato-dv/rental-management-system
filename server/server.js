@@ -118,6 +118,10 @@ app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/maintenance", require("./routes/maintenanceRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 
+// === BAGO: Idinagdag ang Reports Route dito ===
+app.use("/api/reports", require("./routes/reportRoutes"));
+// ==============================================
+
 // Global error handler
 app.use((err, req, res, next) => {
   if (isProduction) {
