@@ -1,26 +1,22 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-/**
- * Middleware para protektahan ang mga private routes.
- * Sinisiguro nito na may valid JWT token ang request.
- */
 const protect = async (req, res, next) => {
   let token;
 
-  // 1. Check kung may Authorization header at kung nagsisimula sa "Bearer"
+  // check if there are authorized header
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
     try {
-      // 2. Kunin ang token mula sa header (Bearer <token>)
+      // get the token
       token = req.headers.authorization.split(" ")[1];
 
-      // 3. I-verify ang token gamit ang secret key
+      // 3. verifying the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // 4. Hanapin ang user sa database gamit ang ID mula sa token (huwag isama ang password)
+      // 4. look the user in the db
       const user = await User.findById(decoded.id).select("-password");
 
       if (!user) {
@@ -30,10 +26,10 @@ const protect = async (req, res, next) => {
         });
       }
 
-      // 5. I-attach ang user object sa request para magamit ng susunod na function
+      // 5. attaching the user to req
       req.user = user;
       
-      // 6. Tawagin ang next() para magpatuloy sa controller
+      // 6. call next() to proceed to controller
       return next();
     } catch (error) {
       console.error("Auth Middleware Error:", error);
@@ -44,7 +40,6 @@ const protect = async (req, res, next) => {
     }
   }
 
-  // 7. Kung walang token na nakita sa header
   if (!token) {
     return res.status(401).json({
       success: false,

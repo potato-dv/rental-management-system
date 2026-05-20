@@ -122,12 +122,12 @@ const createLease = async (req, res) => {
   try {
     const { tenantId, unitId, startDate, endDate, monthlyRent } = req.body;
 
-    // Check if tenant exists
-    const tenant = await User.findOne({ _id: tenantId, role: "tenant" });
+    // === BAGO: Tanggapin kahit "user" o "applicant" pa lang ang role ===
+    const tenant = await User.findById(tenantId);
     if (!tenant) {
       return res.status(404).json({
         success: false,
-        message: "Tenant not found",
+        message: "Applicant/User not found", // Pinalitan ang mensahe
       });
     }
 
@@ -172,37 +172,36 @@ const createLease = async (req, res) => {
     // Update unit status to occupied
     await Unit.findByIdAndUpdate(unitId, { status: "occupied" });
 
+    // === BAGO: I-UPGRADE ANG ROLE NIYA TO "TENANT"! ===
+    // Ito ang magbibigay ng access sa user sa Tenant Dashboard
+    if (tenant.role !== "tenant") {
+      tenant.role = "tenant";
+      await tenant.save();
+    }
+    // =================================================
+
     const populatedLease = await Lease.findById(lease._id)
       .populate("tenantId", "name email contactNumber")
       .populate("unitId", "unitNumber type floor");
 
-    // Create initial payment records for the lease duration
+    // === BAGO: Create initial payment record for the FIRST MONTH ONLY ===
     const start = new Date(startDate);
-    const end = new Date(endDate);
-    const payments = [];
-
-    let currentDate = new Date(start);
-    while (currentDate <= end) {
-      payments.push({
-        leaseId: lease._id,
-        tenantId,
-        amount: monthlyRent,
-        dueDate: new Date(currentDate),
-        paymentMethod: "gcash",
-        recordedBy: "admin",
-        status: "pending",
-        remainingBalance: monthlyRent,
-      });
-
-      // Move to next month
-      currentDate.setMonth(currentDate.getMonth() + 1);
-    }
-
-    await Payment.insertMany(payments);
+    
+    await Payment.create({
+      leaseId: lease._id,
+      tenantId,
+      amount: monthlyRent,
+      dueDate: start,
+      paymentMethod: "gcash", // BINALIK SA GCASH para hindi mag-error ang DB
+      recordedBy: "admin",
+      status: "pending",      // BINALIK SA PENDING para pasok sa enum validation
+      remainingBalance: monthlyRent,
+    });
+    // ====================================================================
 
     res.status(201).json({
       success: true,
-      message: "Lease created successfully",
+      message: "Lease created successfully. Applicant is now a Tenant!",
       lease: populatedLease,
     });
   } catch (error) {
