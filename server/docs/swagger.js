@@ -62,7 +62,7 @@ const swaggerSpec = {
           unitNumber: { type: "string", example: "601" },
           type: {
             type: "string",
-            enum: ["studio", "one-bedroom", "two-bedroom", "three-bedroom"],
+            enum: ["studio", "one-bedroom", "two-bedroom"],
             example: "studio",
           },
           price: { type: "number", example: 12000 },
@@ -78,7 +78,7 @@ const swaggerSpec = {
           unitNumber: { type: "string", example: "601" },
           type: {
             type: "string",
-            enum: ["studio", "one-bedroom", "two-bedroom", "three-bedroom"],
+            enum: ["studio", "one-bedroom", "two-bedroom"],
             example: "studio",
           },
           price: { type: "number", example: 14000 },
@@ -98,6 +98,13 @@ const swaggerSpec = {
       },
       ApplicationCreateRequest: {
         type: "object",
+        required: ["unitId", "moveInDate", "moveOutDate"],
+        properties: {
+          unitId: { type: "string", example: "60f7a9e2b4d8c72f9c8b4567" },
+          moveInDate: { type: "string", example: "2024-07-01" },
+          moveOutDate: { type: "string", example: "2024-07-31" },
+          message: { type: "string", example: "Looking forward to moving in." },
+        },
         additionalProperties: true,
       },
       ApplicationStatusUpdateRequest: {
@@ -117,6 +124,25 @@ const swaggerSpec = {
       PaymentCreateRequest: {
         type: "object",
         additionalProperties: true,
+      },
+      PaymentRecordRequest: {
+        type: "object",
+        required: ["paymentMethod", "proofOfPayment"],
+        properties: {
+          paymentMethod: {
+            type: "string",
+            enum: ["cash", "gcash", "bank transfer", "maya"],
+            example: "gcash",
+          },
+          referenceNumber: {
+            type: "string",
+            example: "ABC123456789",
+          },
+          proofOfPayment: {
+            type: "string",
+            format: "binary",
+          },
+        },
       },
       MaintenanceCreateRequest: {
         type: "object",
@@ -783,10 +809,10 @@ const swaggerSpec = {
           },
         ],
         requestBody: {
-          required: false,
+          required: true,
           content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/GenericObject" },
+            "multipart/form-data": {
+              schema: { $ref: "#/components/schemas/PaymentRecordRequest" },
             },
           },
         },
@@ -959,118 +985,6 @@ const swaggerSpec = {
         },
       },
     },
-    "/api/help-reports/my/requests": {
-      get: {
-        tags: ["Help Reports"],
-        summary: "Get my help/report requests (tenant only)",
-        security: [{ bearerAuth: [] }],
-        responses: {
-          200: { description: "Requests fetched" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-        },
-      },
-    },
-    "/api/help-reports": {
-      get: {
-        tags: ["Help Reports"],
-        summary: "Get all help/report requests (admin only)",
-        security: [{ bearerAuth: [] }],
-        responses: {
-          200: { description: "Requests fetched" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-        },
-      },
-      post: {
-        tags: ["Help Reports"],
-        summary: "Create help/report request (tenant only)",
-        security: [{ bearerAuth: [] }],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/HelpReportCreateRequest" },
-            },
-          },
-        },
-        responses: {
-          201: { description: "Request created" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-        },
-      },
-    },
-    "/api/help-reports/{id}": {
-      get: {
-        tags: ["Help Reports"],
-        summary: "Get help/report request by ID (admin/tenant)",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Request fetched" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-          404: { description: "Not found" },
-        },
-      },
-      delete: {
-        tags: ["Help Reports"],
-        summary: "Delete help/report request by ID (admin only)",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Request deleted" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-        },
-      },
-    },
-    "/api/help-reports/{id}/status": {
-      put: {
-        tags: ["Help Reports"],
-        summary: "Update help/report status (admin only)",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/HelpReportStatusUpdateRequest",
-              },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Request status updated" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden" },
-        },
-      },
-    },
-
     "/api/dashboard/admin": {
       get: {
         tags: ["Dashboard"],

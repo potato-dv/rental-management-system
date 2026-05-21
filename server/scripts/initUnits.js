@@ -40,10 +40,10 @@ const fixedUnits = [
   },
   {
     unitNumber: "105",
-    type: "three-bedroom",
-    price: 35000,
+    type: "two-bedroom",
+    price: 28000,
     floor: "1",
-    description: "Three bedroom unit on floor 1",
+    description: "Two bedroom unit on floor 1",
   },
 
   // Floor 2
@@ -77,10 +77,10 @@ const fixedUnits = [
   },
   {
     unitNumber: "205",
-    type: "three-bedroom",
-    price: 35000,
+    type: "two-bedroom",
+    price: 28000,
     floor: "2",
-    description: "Three bedroom unit on floor 2",
+    description: "Two bedroom unit on floor 2",
   },
 
   // Floor 3
@@ -114,10 +114,10 @@ const fixedUnits = [
   },
   {
     unitNumber: "305",
-    type: "three-bedroom",
-    price: 35000,
+    type: "two-bedroom",
+    price: 28000,
     floor: "3",
-    description: "Three bedroom unit on floor 3",
+    description: "Two bedroom unit on floor 3",
   },
 
   // Floor 4
@@ -151,10 +151,10 @@ const fixedUnits = [
   },
   {
     unitNumber: "405",
-    type: "three-bedroom",
-    price: 35000,
+    type: "two-bedroom",
+    price: 28000,
     floor: "4",
-    description: "Three bedroom unit on floor 4",
+    description: "Two bedroom unit on floor 4",
   },
 
   // Floor 5
@@ -188,10 +188,10 @@ const fixedUnits = [
   },
   {
     unitNumber: "505",
-    type: "three-bedroom",
-    price: 35000,
+    type: "two-bedroom",
+    price: 28000,
     floor: "5",
-    description: "Three bedroom unit on floor 5",
+    description: "Two bedroom unit on floor 5",
   },
 ];
 

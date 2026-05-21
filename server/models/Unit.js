@@ -1,45 +1,48 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const UnitSchema = new mongoose.Schema({
-  unitNumber: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
+const UnitSchema = new mongoose.Schema(
+  {
+    unitNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    // ---> IDINAGDAG NATIN ITO PARA MA-SAVE ANG PROPERTY NAME <---
+    property: {
+      type: String,
+      trim: true,
+      default: "Rentix Property",
+    },
+    type: {
+      type: String,
+      enum: ["studio", "one-bedroom", "two-bedroom"],
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    floor: {
+      type: String,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["available", "occupied"],
+      default: "available",
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
   },
-  // ---> IDINAGDAG NATIN ITO PARA MA-SAVE ANG PROPERTY NAME <---
-  property: {
-    type: String,
-    trim: true,
-    default: 'Rentix Property'
-  },
-  type: {
-    type: String,
-    enum: ['studio', 'one-bedroom', 'two-bedroom', 'three-bedroom'],
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true
-  },
-  floor: {
-    type: String,
-    trim: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  status: {
-    type: String,
-    enum: ['available', 'occupied'],
-    default: 'available'
-  },
-  images: [
-    {
-      type: String
-    }
-  ]
-}, { timestamps: true })
+  { timestamps: true },
+);
 
-module.exports = mongoose.model('Unit', UnitSchema)
+module.exports = mongoose.model("Unit", UnitSchema);

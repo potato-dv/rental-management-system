@@ -2,21 +2,16 @@ const { sanitizeString } = require("./helpers");
 
 const validateUnit = (req, res, next) => {
   // IDINAGDAG ANG 'property' DITO
-  const { unitNumber, type, price, status, description, floor, property } = req.body;
+  const { unitNumber, type, price, status, description, floor, property } =
+    req.body;
 
   // Type validation (if provided)
   if (type) {
-    const validTypes = [
-      "studio",
-      "one-bedroom",
-      "two-bedroom",
-      "three-bedroom",
-    ];
+    const validTypes = ["studio", "one-bedroom", "two-bedroom"];
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         success: false,
-        message:
-          "Type must be one of: studio, one-bedroom, two-bedroom, three-bedroom",
+        message: "Type must be one of: studio, one-bedroom, two-bedroom",
       });
     }
   }

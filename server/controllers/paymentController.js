@@ -179,7 +179,7 @@ const createPayment = async (req, res) => {
 // @access  Private/Tenant
 const recordTenantPayment = async (req, res) => {
   try {
-    const { paymentMethod } = req.body;
+    const { paymentMethod, referenceNumber } = req.body;
 
     const payment = await Payment.findById(req.params.id);
 
@@ -215,6 +215,12 @@ const recordTenantPayment = async (req, res) => {
 
     payment.paidDate = Date.now();
     payment.paymentMethod = paymentMethod;
+    if (
+      typeof referenceNumber === "string" &&
+      referenceNumber.trim().length > 0
+    ) {
+      payment.referenceNumber = referenceNumber.trim();
+    }
     payment.proofOfPayment = req.file.path;
     payment.recordedBy = "tenant";
     payment.status = "pending";
@@ -260,6 +266,20 @@ const verifyPayment = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Payment already verified",
+      });
+    }
+
+    if (!["pending", "overdue"].includes(payment.status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending or overdue payments can be verified",
+      });
+    }
+
+    if (!payment.proofOfPayment || payment.recordedBy !== "tenant") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment cannot be verified until tenant submits proof",
       });
     }
 
