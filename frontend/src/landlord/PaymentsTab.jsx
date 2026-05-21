@@ -1,5 +1,7 @@
 import React from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function PaymentsTab({
   paymentsData,
   leasesData,
@@ -104,7 +106,7 @@ export default function PaymentsTab({
                 const proofUrl = proofPath
                   ? /^https?:\/\//i.test(proofPath)
                     ? proofPath
-                    : `http://localhost:8000/${proofPath.replace(/^\/+/, "")}`
+                    : `${API_URL}/${proofPath.replace(/^\/+/, "")}`
                   : "";
                 const canVerify =
                   (normalizedStatus === "pending" ||

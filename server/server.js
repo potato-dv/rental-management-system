@@ -22,37 +22,6 @@ const parsePositiveInt = (value, fallback) => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 
-const allowedOrigins = (process.env.CORS_ORIGINS || "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.length === 0) {
-      if (!isProduction) {
-        return callback(null, true);
-      }
-      const error = new Error("Not allowed by CORS");
-      error.status = 403;
-      return callback(error);
-    }
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    const error = new Error("Not allowed by CORS");
-    error.status = 403;
-    return callback(error);
-  },
-  optionsSuccessStatus: 204,
-};
-
 const rateLimitWindowMs = parsePositiveInt(
   process.env.RATE_LIMIT_WINDOW_MS,
   15 * 60 * 1000,
@@ -89,7 +58,12 @@ const mongoSanitizeRequest = (req, res, next) => {
 // Middleware
 app.disable("x-powered-by");
 app.use(helmet());
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: "https://rental-management-system-gamma.vercel.app",
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: requestBodyLimit }));
 app.use(mongoSanitizeRequest);
 app.use("/uploads", express.static("uploads"));

@@ -27,6 +27,8 @@ import MaintenanceTab from "./MaintenanceTab";
 import LeasingTab from "./LeasingTab";
 import ReportsTab from "./ReportsTab";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard },
   { name: "Units", icon: Home },
@@ -149,25 +151,25 @@ export const LandingPage = () => {
           reportsRes,
         ] = await Promise.all([
           axios
-            .get("http://localhost:8000/api/units", config)
+            .get(`${API_URL}/api/units`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/tenants", config)
+            .get(`${API_URL}/api/tenants`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/maintenance", config)
+            .get(`${API_URL}/api/maintenance`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/payments", config)
+            .get(`${API_URL}/api/payments`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/applications", config)
+            .get(`${API_URL}/api/applications`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/leases", config)
+            .get(`${API_URL}/api/leases`, config)
             .catch(() => ({ data: [] })),
           axios
-            .get("http://localhost:8000/api/reports", config)
+            .get(`${API_URL}/api/reports`, config)
             .catch(() => ({ data: [] })),
         ]);
 
@@ -304,7 +306,7 @@ export const LandingPage = () => {
       };
       if (editingUnitId) {
         const res = await axios.put(
-          `http://localhost:8000/api/units/${editingUnitId}`,
+          `${API_URL}/api/units/${editingUnitId}`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } },
         );
@@ -316,7 +318,7 @@ export const LandingPage = () => {
         showNotification("Unit details updated successfully!", "success");
       } else {
         const res = await axios.post(
-          `http://localhost:8000/api/units`,
+          `${API_URL}/api/units`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } },
         );
@@ -337,7 +339,7 @@ export const LandingPage = () => {
   const confirmDelete = async () => {
     if (!unitToDelete) return;
     try {
-      await axios.delete(`http://localhost:8000/api/units/${unitToDelete}`, {
+      await axios.delete(`${API_URL}/api/units/${unitToDelete}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUnitsData((prev) =>
@@ -361,7 +363,7 @@ export const LandingPage = () => {
     if (!tenantToDelete) return;
     try {
       await axios.delete(
-        `http://localhost:8000/api/tenants/${tenantToDelete}`,
+        `${API_URL}/api/tenants/${tenantToDelete}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         },
@@ -390,7 +392,7 @@ export const LandingPage = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:8000/api/maintenance/${selectedMaintenance._id || selectedMaintenance.id}/status`,
+        `${API_URL}/api/maintenance/${selectedMaintenance._id || selectedMaintenance.id}/status`,
         { status: maintenanceStatus },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -420,7 +422,7 @@ export const LandingPage = () => {
     if (!maintenanceToDelete) return;
     try {
       await axios.delete(
-        `http://localhost:8000/api/maintenance/${maintenanceToDelete}`,
+        `${API_URL}/api/maintenance/${maintenanceToDelete}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         },
@@ -447,7 +449,7 @@ export const LandingPage = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:8000/api/reports/${selectedReport._id || selectedReport.id}/status`,
+        `${API_URL}/api/reports/${selectedReport._id || selectedReport.id}/status`,
         { status: reportStatus },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -476,7 +478,7 @@ export const LandingPage = () => {
     if (!reportToDelete) return;
     try {
       await axios.delete(
-        `http://localhost:8000/api/reports/${reportToDelete}`,
+        `${API_URL}/api/reports/${reportToDelete}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         },
@@ -496,7 +498,7 @@ export const LandingPage = () => {
   const handleApproveApplication = async (appId) => {
     try {
       await axios.put(
-        `http://localhost:8000/api/applications/${appId}/status`,
+        `${API_URL}/api/applications/${appId}/status`,
         { status: "approved" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -518,7 +520,7 @@ export const LandingPage = () => {
   const handleDenyApplication = async (appId) => {
     try {
       await axios.put(
-        `http://localhost:8000/api/applications/${appId}/status`,
+        `${API_URL}/api/applications/${appId}/status`,
         { status: "denied" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -540,7 +542,7 @@ export const LandingPage = () => {
   const handleVerifyPayment = async (paymentId) => {
     try {
       await axios.put(
-        `http://localhost:8000/api/payments/${paymentId}/verify`,
+        `${API_URL}/api/payments/${paymentId}/verify`,
         {},
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -627,7 +629,7 @@ export const LandingPage = () => {
         endDate: leaseFormData.endDate,
       };
       const res = await axios.post(
-        `http://localhost:8000/api/leases`,
+        `${API_URL}/api/leases`,
         payload,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

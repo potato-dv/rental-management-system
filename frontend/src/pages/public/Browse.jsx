@@ -19,6 +19,8 @@ import studioImage from "../../assets/images/studio.jpg";
 import oneBedroomImage from "../../assets/images/1bedroom.jpg";
 import twoBedroomImage from "../../assets/images/2bedroom.jpg";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ALLOWED_UNIT_TYPES = ["studio", "one-bedroom", "two-bedroom"];
 
 export default function Browse() {
@@ -127,7 +129,7 @@ export default function Browse() {
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/units");
+        const res = await axios.get(`${API_URL}/api/units`);
         const fetchedUnits = res.data.units || [];
         const allowedUnits = fetchedUnits.filter((unit) =>
           ALLOWED_UNIT_TYPES.includes((unit.type || "").toLowerCase()),
@@ -214,7 +216,7 @@ export default function Browse() {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:8000/api/applications",
+        `${API_URL}/api/applications`,
         { unitId: selectedUnit._id, moveInDate, moveOutDate, message },
         { headers: { Authorization: `Bearer ${token}` } },
       );

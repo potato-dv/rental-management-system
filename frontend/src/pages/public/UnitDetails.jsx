@@ -7,6 +7,8 @@ import { FiMapPin, FiMaximize, FiHome, FiCheckCircle } from "react-icons/fi";
 import rentixLogo from "../../assets/RentixLogo.jpg";
 import rentixName from "../../assets/RentixName.jpg";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ALLOWED_UNIT_TYPES = ["studio", "one-bedroom", "two-bedroom"];
 
 export default function UnitDetails() {
@@ -29,7 +31,7 @@ export default function UnitDetails() {
   useEffect(() => {
     const fetchUnit = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/units/${id}`);
+        const res = await axios.get(`${API_URL}/api/units/${id}`);
         const fetchedUnit = res.data.unit;
         if (
           fetchedUnit &&
@@ -79,7 +81,7 @@ export default function UnitDetails() {
       const token = localStorage.getItem("token");
       // MATCHED SA BACKEND: pinapasa na natin ang unitId at message
       await axios.post(
-        "http://localhost:8000/api/applications",
+        `${API_URL}/api/applications`,
         { unitId: id, moveInDate, moveOutDate, message },
         { headers: { Authorization: `Bearer ${token}` } },
       );

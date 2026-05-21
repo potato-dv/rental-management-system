@@ -3,6 +3,8 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { FiUpload, FiCheckCircle } from "react-icons/fi";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Payments() {
   const { user } = useAuth();
   const [payments, setPayments] = useState([]);
@@ -30,7 +32,7 @@ export default function Payments() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "http://localhost:8000/api/payments/my/payments",
+        `${API_URL}/api/payments/my/payments`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -121,7 +123,7 @@ export default function Payments() {
       formData.append("proofOfPayment", proofFile);
 
       await axios.post(
-        `http://localhost:8000/api/payments/${selectedPaymentId}/record`,
+        `${API_URL}/api/payments/${selectedPaymentId}/record`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } },
       );

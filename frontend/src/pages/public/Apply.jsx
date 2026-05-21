@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ALLOWED_UNIT_TYPES = ["studio", "one-bedroom", "two-bedroom"];
 
 export default function Apply() {
@@ -22,7 +24,7 @@ export default function Apply() {
   useEffect(() => {
     const fetchUnit = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/units/${id}`);
+        const res = await axios.get(`${API_URL}/api/units/${id}`);
 
         const fetchedUnit =
           res.data.unit || res.data.units?.find((u) => u._id === id);
@@ -65,7 +67,7 @@ export default function Apply() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:8000/api/applications",
+        `${API_URL}/api/applications`,
         { unitId: id, moveInDate, moveOutDate, message },
         { headers: { Authorization: `Bearer ${token}` } },
       );
