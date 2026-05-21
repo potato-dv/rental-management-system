@@ -60,7 +60,7 @@ app.disable("x-powered-by");
 app.use(helmet());
 app.use(
   cors({
-    origin: "https://rental-management-system-gamma.vercel.app",
+    origin: "https://rental-management-system-tawny.vercel.app",
     credentials: true,
   }),
 );
