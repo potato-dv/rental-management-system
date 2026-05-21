@@ -100,7 +100,7 @@ const getMyApplications = async (req, res) => {
 // @access  Private/Tenant
 const createApplication = async (req, res) => {
   try {
-    const { unitId, moveInDate, message } = req.body;
+    const { unitId, moveInDate, moveOutDate, message } = req.body;
 
     // Check if unit exists and is available
     const unit = await Unit.findById(unitId);
@@ -149,6 +149,7 @@ const createApplication = async (req, res) => {
       tenantId: req.user.id,
       unitId,
       moveInDate,
+      moveOutDate,
       message,
     });
 

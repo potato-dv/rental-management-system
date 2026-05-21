@@ -32,6 +32,15 @@ const validateLease = (req, res, next) => {
     });
   }
 
+  const minEnd = new Date(start);
+  minEnd.setMonth(minEnd.getMonth() + 1);
+  if (end < minEnd) {
+    return res.status(400).json({
+      success: false,
+      message: "Lease end date must be at least 1 month after start date",
+    });
+  }
+
   if (!monthlyRent || monthlyRent <= 0) {
     return res.status(400).json({
       success: false,
